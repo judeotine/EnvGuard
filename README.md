@@ -15,7 +15,7 @@ EnvGuard is a professional development tool that automatically masks sensitive e
 
 EnvGuard is a professional-grade VS Code extension designed to protect sensitive environment variables during live streaming, screen sharing, or pair programming sessions. It automatically detects and masks sensitive values in `.env` files without affecting the actual file content.
 
-> 🌐 **Website**: [envguard.dev](https://envguard.dev) *(coming soon)*
+> 🌐 **Website**: [envguard](https://envguard-six.vercel.app)
 
 ---
 
