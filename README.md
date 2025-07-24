@@ -1,4 +1,8 @@
-# EnvGuard
+<div align="center">
+  <img src="https://raw.githubusercontent.com/judeotine/EnvGuard/main/assets/logo/envguard-logo.png" alt="EnvGuard Logo" width="200">
+  <h1>EnvGuard: Secure Environment Variable Masking for VS Code</h1>
+  <p>Professional-grade protection for your sensitive environment variables during development</p>
+</div>
 
 **Enterprise-Grade Secret Protection for VS Code**
 
@@ -18,7 +22,7 @@ EnvGuard is a professional-grade VS Code extension designed to protect sensitive
 ## Key Features
 
 ### **Automatic Protection**
-- **Auto-detection**: Instantly recognizes `.env`, `.env.local`, `.env.production`, and other environment files
+- **Auto-detection**: Instantly recognizes `.env`, `.env.local`, `.env.production` and other environment files
 - **Smart masking**: Only the values are hidden—keys remain visible for easy identification
 - **Real-time updates**: Masking applies as you type with zero performance impact
 
@@ -43,7 +47,7 @@ EnvGuard is a professional-grade VS Code extension designed to protect sensitive
 - **One-click activation**: Instantly mask ALL environment values across all open files
 - **Extra protection**: Disables hover reveals and clipboard access
 - **Visual indicator**: Status bar shows streaming mode is active
-- **Perfect for**: Live coding, tutorials, and screen recordings
+- **Perfect for**: Live coding, tutorials and screen recordings
 
 ### **Advanced Security**
 - **Clipboard protection**: Prevents copying masked values to clipboard
@@ -245,7 +249,7 @@ EnvGuard supports multiple pattern types:
   "envguard.patterns": [
     "SECRET",           // Simple substring matching
     "API_*",           // Wildcard patterns
-    "/^PRIVATE_/",     // Regex patterns (enclosed in forward slashes)
+    "/^PRIVATE_/",     // Regex patterns 
     "TOKEN"
   ]
 }
