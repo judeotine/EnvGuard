@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shield Background -->
+  <path d="M256 32C256 32 96 96 64 192V320C64 416 256 480 256 480C256 480 448 416 448 320V192C416 96 256 32 256 32Z" fill="#2B7A78"/>
+  
+  <!-- Shield Highlight -->
+  <path d="M256 32C256 32 416 96 448 192V320C448 416 256 480 256 480V32Z" fill="#3AAFA9"/>
+  
+  <!-- Shield Border -->
+  <path d="M256 32C256 32 96 96 64 192V320C64 416 256 480 256 480C256 480 448 416 448 320V192C416 96 256 32 256 32Z" stroke="#17252A" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  
+  <!-- Keyhole Design -->
+  <circle cx="256" cy="256" r="96" fill="#DEF2F1" stroke="#17252A" stroke-width="8"/>
+  <rect x="232" y="192" width="48" height="80" rx="8" fill="#17252A"/>
+  <circle cx="256" cy="224" r="24" fill="#2B7A78" stroke="#17252A" stroke-width="4"/>
+  
+  <!-- Lock Design -->
+  <rect x="224" y="272" width="64" height="40" rx="8" fill="#2B7A78" stroke="#17252A" stroke-width="4"/>
+  <rect x="232" y="280" width="48" height="16" rx="4" fill="#17252A"/>
+  <circle cx="256" cy="292" r="4" fill="#17252A"/>
+</svg>
