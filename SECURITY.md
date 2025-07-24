@@ -1,7 +1,6 @@
 # Security Policy
 
 ## Supported Versions
-
 We provide security updates for the following versions of EnvGuard:
 
 | Version | Supported          |
@@ -19,25 +18,7 @@ We take security vulnerabilities very seriously. If you discover a security issu
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please send an email to [security@envguard.dev](mailto:security@envguard.dev) with the subject line "[SECURITY] Vulnerability Report".
-
-For sensitive communications, you can use our PGP key:
-
-```
-[PGP Public Key](https://keys.openpgp.org/)
-Fingerprint: [YOUR_KEY_FINGERPRINT]
-```
-
-### What to Include
-
-When reporting a vulnerability, please include:
-
-1. A detailed description of the vulnerability
-2. Steps to reproduce the issue
-3. Impact of the vulnerability
-4. Any potential mitigations
-5. Your name and affiliation (if any)
-6. Your GitHub username (if you'd like credit)
+Instead, please send an email to [judextine28@gmail.com](mailto:judextine28@gmail.com) with the subject line "[SECURITY] Vulnerability Report".
 
 ### Our Commitment
 
