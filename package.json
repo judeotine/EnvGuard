@@ -1,0 +1,185 @@
+{
+  "name": "envguard",
+  "displayName": "EnvGuard",
+  "description": "Protect your secrets in VS Code — mask sensitive values in .env files automatically and safely.",
+  "version": "1.0.0",
+  "publisher": "envguard",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Security"
+  ],
+  "keywords": [
+    "env",
+    "environment",
+    "security",
+    "mask",
+    "dotenv",
+    "secrets",
+    "streaming"
+  ],
+  "activationEvents": [
+    "onLanguage:dotenv",
+    "onLanguage:plaintext"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "envguard.toggleMasking",
+        "title": "Toggle Masking",
+        "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.enableStreamingMode",
+        "title": "Enable Streaming Mode",
+        "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.disableStreamingMode",
+        "title": "Disable Streaming Mode",
+        "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.refreshPatterns",
+        "title": "Refresh Patterns",
+        "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.openSettings",
+        "title": "Open Settings",
+        "category": "EnvGuard"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "envguard.toggleMasking",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "EnvGuard",
+      "properties": {
+        "envguard.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable EnvGuard masking"
+        },
+        "envguard.maskStyle": {
+          "type": "string",
+          "enum": [
+            "asterisks",
+            "dots",
+            "blur"
+          ],
+          "default": "dots",
+          "description": "Style of masking to apply"
+        },
+        "envguard.patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "SECRET",
+            "KEY",
+            "TOKEN",
+            "PASSWORD",
+            "PASS",
+            "API_KEY",
+            "AUTH",
+            "PRIVATE"
+          ],
+          "description": "Patterns to match for selective masking"
+        },
+        "envguard.whitelist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "PORT",
+            "DEBUG",
+            "NODE_ENV",
+            "ENVIRONMENT"
+          ],
+          "description": "Environment variable names to exclude from masking"
+        },
+        "envguard.maskAllValues": {
+          "type": "boolean",
+          "default": false,
+          "description": "Mask all environment variable values (ignores patterns)"
+        },
+        "envguard.autoMaskOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically mask values when opening .env files"
+        },
+        "envguard.hoverRevealDuration": {
+          "type": "number",
+          "default": 3,
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Duration in seconds to reveal value on hover (0 to disable)"
+        },
+        "envguard.autoLockTimer": {
+          "type": "number",
+          "default": 5,
+          "minimum": 0,
+          "maximum": 60,
+          "description": "Minutes of inactivity before auto-masking (0 to disable)"
+        },
+        "envguard.clipboardProtection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Prevent copying masked values to clipboard"
+        },
+        "envguard.supportedFileExtensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".env",
+            ".env.local",
+            ".env.development",
+            ".env.production",
+            ".env.staging",
+            ".env.test"
+          ],
+          "description": "File extensions to apply masking to"
+        }
+      }
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "envguard",
+          "name": "EnvGuard",
+          "when": "true"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "envguard",
+        "contents": "Configure EnvGuard to protect your environment variables.\n[Open Settings](command:envguard.openSettings)\n[Toggle Masking](command:envguard.toggleMasking)"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  }
+}
