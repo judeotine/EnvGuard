@@ -3,7 +3,10 @@ node_modules/
 
 # Build artifacts
 out/
+
+# Ignore compiled JS files except those in scripts
 *.js
+!scripts/*.js
 *.js.map
 
 # VS Code
