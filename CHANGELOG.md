@@ -1,45 +1,62 @@
-# Change Log
+# Changelog
 
-All notable changes to the "EnvGuard" extension will be documented in this file.
+All notable changes to the EnvGuard extension will be documented in this file.
 
-## [1.0.0] - 2025-01-XX
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
 
 ### Added
-- Initial release of EnvGuard
-- Automatic masking of sensitive environment variable values
-- Three masking styles: dots, asterisks, and blur
-- Pattern-based selective masking with default patterns (SECRET, KEY, TOKEN, etc.)
-- Whitelist support for common non-sensitive variables
-- Command palette integration with toggle masking command
-- Keyboard shortcut support (Ctrl+Shift+M)
-- Status bar integration with visual indicators
-- Dedicated sidebar panel for configuration
-- Streaming mode for maximum protection during live sessions
-- Clipboard protection to prevent copying masked values
-- Auto-lock timer for automatic re-masking after inactivity
-- Hover reveal functionality with configurable duration
-- Support for multiple .env file variants (.env.local, .env.production, etc.)
-- Real-time masking updates with debounced performance optimization
-- Regex and wildcard pattern support
-- Per-workspace configuration support
-- Remote development compatibility (Codespaces, Remote SSH, Live Share)
+- Initial setup for future changes
 
-### Security Features
-- Values are never modified on disk - masking is purely visual
-- Clipboard protection prevents accidental copying of sensitive values
-- Streaming mode provides extra protection for live coding sessions
-- Auto-lock ensures secrets remain protected after periods of inactivity
+## [1.0.0] - 2025-07-25
 
-### Performance
-- Debounced updates for smooth typing experience
-- Efficient decoration caching to minimize VS Code API calls
-- Lightweight operation with no impact on file saving or Git operations
+### Added
+- **Core Functionality**:
+  - Automatic masking of sensitive environment variables in .env files
+  - Support for multiple masking styles (dots, asterisks, blur)
+  - Pattern-based detection of sensitive variables
+  - Whitelist support for non-sensitive variables
+  - Status bar integration for quick toggling
+  - Sidebar panel for easy access to settings and status
 
-### Supported Files
-- .env
-- .env.local
-- .env.development
-- .env.production
-- .env.staging
-- .env.test
-- Custom file extensions via configuration
+- **Security Features**:
+  - Clipboard protection to prevent accidental copying of sensitive values
+  - Auto-lock timer for automatic re-masking after inactivity
+  - Hover reveal functionality with configurable duration
+  - Streaming mode for maximum protection during live sessions
+
+- **User Experience**:
+  - Command palette integration
+  - Visual indicators for masking status
+  - Customizable settings through VS Code settings
+  - Support for multiple .env file variants (.env.local, .env.production, etc.)
+  - Real-time updates with performance optimizations
+
+- **Development Features**:
+  - Comprehensive TypeScript implementation
+  - Modular architecture for easy maintenance
+  - Debug configuration included
+  - GitHub repository with issue templates
+
+### Technical Details
+- Built with TypeScript
+- VS Code Extension API
+- Modern ES6+ JavaScript features
+- Comprehensive error handling
+- Performance optimized for large .env files
+
+### Fixed
+- Initial release with no known bugs
+
+## [0.1.0] - 2025-07-20
+
+### Added
+- Initial development version
+- Basic environment variable masking functionality
+- Core extension setup and configuration
+
+[Unreleased]: https://github.com/judeotine/EnvGuard/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/judeotine/EnvGuard/releases/tag/v1.0.0
+[0.1.0]: https://github.com/judeotine/EnvGuard/releases/tag/v0.1.0
