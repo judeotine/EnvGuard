@@ -1,13 +1,16 @@
 import * as vscode from 'vscode';
 import { SettingsManager } from '../managers/SettingsManager';
 import { PatternMatcher } from '../utils/PatternMatcher';
+import { StatsTracker } from '../utils/StatsTracker';
 
 export class EnvMaskingProvider implements vscode.Disposable {
-    private decorationType: vscode.TextEditorDecorationType | undefined;
-    private blurDecorationType: vscode.TextEditorDecorationType | undefined;
+    private asterisksDecorationType: vscode.TextEditorDecorationType | undefined;
+private dotsDecorationType: vscode.TextEditorDecorationType | undefined;
+private blurDecorationType: vscode.TextEditorDecorationType | undefined;
     private isEnabled: boolean = true;
     private isStreamingMode: boolean = false;
     private autoLockTimer: NodeJS.Timeout | undefined;
+    private statsTracker: StatsTracker;
     private debounceTimer: Map<string, NodeJS.Timeout> = new Map();
 
     constructor(
@@ -16,58 +19,56 @@ export class EnvMaskingProvider implements vscode.Disposable {
     ) {
         this.createDecorationTypes();
         this.isEnabled = this.settingsManager.getSetting<boolean>('enabled', true);
+        this.statsTracker = new StatsTracker();
         this.setupAutoLockTimer();
     }
 
-    private createDecorationTypes() {
-        const maskStyle = this.settingsManager.getSetting<string>('maskStyle', 'dots');
-        
-        let decorationOptions: vscode.DecorationRenderOptions;
-        
-        switch (maskStyle) {
-            case 'asterisks':
-                decorationOptions = {
-                    after: {
-                        contentText: '••••••••',
-                        color: '#666',
-                        fontWeight: 'bold'
-                    },
-                    textDecoration: 'none; opacity: 0;'
-                };
-                break;
-            case 'dots':
-                decorationOptions = {
-                    after: {
-                        contentText: '••••••••',
-                        color: '#888',
-                        fontWeight: 'normal'
-                    },
-                    textDecoration: 'none; opacity: 0;'
-                };
-                break;
-            case 'blur':
-                decorationOptions = {
-                    textDecoration: 'none; filter: blur(4px); opacity: 0.3;'
-                };
-                break;
-            default:
-                decorationOptions = {
-                    after: {
-                        contentText: '••••••••',
-                        color: '#888'
-                    },
-                    textDecoration: 'none; opacity: 0;'
-                };
-        }
-
-        this.decorationType?.dispose();
-        this.decorationType = vscode.window.createTextEditorDecorationType(decorationOptions);
-
-        this.blurDecorationType?.dispose();
-        this.blurDecorationType = vscode.window.createTextEditorDecorationType({
-            textDecoration: 'none; filter: blur(4px); opacity: 0.3;'
+    public createDecorationTypes() {
+    // Only create once
+    if (!this.asterisksDecorationType) {
+        this.asterisksDecorationType = vscode.window.createTextEditorDecorationType({
+            after: {
+                contentText: '********',
+                color: '#666',
+                fontWeight: 'bold',
+                margin: '0 0 0 2px'
+            },
+            textDecoration: 'none; opacity: 0;'
         });
     }
+    if (!this.dotsDecorationType) {
+        this.dotsDecorationType = vscode.window.createTextEditorDecorationType({
+            after: {
+                contentText: '••••••••',
+                color: '#888',
+                fontStyle: 'normal',
+                margin: '0 0 0 2px'
+            },
+            textDecoration: 'none; opacity: 0;'
+        });
+    }
+    if (!this.blurDecorationType) {
+        this.blurDecorationType = vscode.window.createTextEditorDecorationType({
+            after: {
+                contentText: '••••••••',
+                color: 'rgba(136, 136, 136, 0.8)',
+                backgroundColor: 'rgba(128, 128, 128, 0.2)',
+                fontStyle: 'normal',
+                margin: '0 0 0 2px'
+            },
+            textDecoration: 'none; opacity: 0;'
+        });
+    }
+}
+
+    private disposeDecorationTypes() {
+    this.asterisksDecorationType?.dispose();
+    this.asterisksDecorationType = undefined;
+    this.dotsDecorationType?.dispose();
+    this.dotsDecorationType = undefined;
+    this.blurDecorationType?.dispose();
+    this.blurDecorationType = undefined;
+}
 
     public isEnvFile(document: vscode.TextDocument): boolean {
         const supportedExtensions = this.settingsManager.getSetting<string[]>('supportedFileExtensions', [
@@ -77,6 +78,14 @@ export class EnvMaskingProvider implements vscode.Disposable {
         const fileName = document.fileName.toLowerCase();
         return supportedExtensions.some(ext => fileName.endsWith(ext)) || 
                fileName.includes('.env');
+    }
+
+    public getStats() {
+        return this.statsTracker.getStats();
+    }
+
+    public resetStats() {
+        this.statsTracker.reset();
     }
 
     public applyMasking(document: vscode.TextDocument) {
@@ -93,59 +102,72 @@ export class EnvMaskingProvider implements vscode.Disposable {
         const editor = vscode.window.visibleTextEditors.find(e => e.document === document);
         if (!editor) return;
 
+        // Track this file in our stats
+        this.statsTracker.trackFile(document.uri.fsPath);
+
         const decorations: vscode.DecorationOptions[] = [];
         const text = document.getText();
         const lines = text.split('\n');
+        let secretsMaskedInFile = 0;
 
+        // --- Atomic, synchronous masking logic ---
+        // Collect all mask ranges and mask values
+        const maskStyle = this.settingsManager.getSetting<string>('maskStyle', 'dots');
+        const maskDecorations: vscode.DecorationOptions[] = [];
         lines.forEach((line, lineIndex) => {
             const match = line.match(/^([^#\s][^=]*?)=(.+)$/);
             if (match) {
                 const [, key, value] = match;
                 const trimmedKey = key.trim();
-                
-                if (this.shouldMaskValue(trimmedKey, value)) {
-                    const valueStartIndex = line.indexOf('=') + 1;
-                    const startPos = new vscode.Position(lineIndex, valueStartIndex);
+                if (this.shouldMaskValue(trimmedKey, value) && match.index !== undefined) {
+                    // Calculate position right after the '=' character
+                    const equalsPosition = line.indexOf('=');
+                    const startPos = new vscode.Position(lineIndex, equalsPosition + 1);
                     const endPos = new vscode.Position(lineIndex, line.length);
-                    
-                    decorations.push({
+
+                    // Determine masking content
+                    let maskContent = '';
+                    if (maskStyle === 'asterisks') {
+                        maskContent = '*'.repeat(value.length);
+                    } else if (maskStyle === 'dots' || maskStyle === 'blur') {
+                        maskContent = '•'.repeat(value.length);
+                    }
+
+                    maskDecorations.push({
                         range: new vscode.Range(startPos, endPos),
-                        hoverMessage: this.getHoverMessage(trimmedKey, value)
+                        hoverMessage: this.getHoverMessage(trimmedKey, value),
+                        renderOptions: {
+                            after: {
+                                contentText: maskContent
+                            }
+                        }
                     });
+                    secretsMaskedInFile++;
                 }
             }
         });
 
-        const decorationType = this.settingsManager.getSetting<string>('maskStyle', 'dots') === 'blur' 
-            ? this.blurDecorationType || this.decorationType
-            : this.decorationType;
-            
+        // Always clear all decoration types first (atomic update)
+        if (this.asterisksDecorationType) editor.setDecorations(this.asterisksDecorationType, []);
+        if (this.dotsDecorationType) editor.setDecorations(this.dotsDecorationType, []);
+        if (this.blurDecorationType) editor.setDecorations(this.blurDecorationType, []);
+
+        // Apply only the selected style
+        let decorationType: vscode.TextEditorDecorationType | undefined = undefined;
+        if (maskStyle === 'blur' && this.blurDecorationType) {
+            decorationType = this.blurDecorationType;
+        } else if (maskStyle === 'asterisks' && this.asterisksDecorationType) {
+            decorationType = this.asterisksDecorationType;
+        } else if (this.dotsDecorationType) {
+            decorationType = this.dotsDecorationType;
+        }
         if (decorationType) {
-            editor.setDecorations(decorationType, decorations);
+            editor.setDecorations(decorationType, maskDecorations);
         }
-    }
-
-    private shouldMaskValue(key: string, value: string): boolean {
-        const whitelist = this.settingsManager.getSetting<string[]>('whitelist', []);
-        const maskAllValues = this.settingsManager.getSetting<boolean>('maskAllValues', false);
-        
-        // Check whitelist first
-        if (whitelist.some(whiteKey => key.toUpperCase().includes(whiteKey.toUpperCase()))) {
-            return false;
+        // Update statistics for this file
+        if (secretsMaskedInFile > 0) {
+            this.statsTracker.trackSecrets(document.uri.fsPath, secretsMaskedInFile);
         }
-
-        // If streaming mode is on, mask everything (except whitelisted)
-        if (this.isStreamingMode) {
-            return true;
-        }
-
-        // If mask all values is enabled
-        if (maskAllValues) {
-            return true;
-        }
-
-        // Use pattern matching
-        return this.patternMatcher.shouldMask(key);
     }
 
     private getHoverMessage(key: string, value: string): vscode.MarkdownString | undefined {
@@ -180,10 +202,10 @@ export class EnvMaskingProvider implements vscode.Disposable {
 
     private clearDecorations(document: vscode.TextDocument) {
         const editor = vscode.window.visibleTextEditors.find(e => e.document === document);
-        if (editor && this.decorationType && this.blurDecorationType) {
-            editor.setDecorations(this.decorationType, []);
-            editor.setDecorations(this.blurDecorationType, []);
-        }
+        if (!editor) return;
+        if (this.asterisksDecorationType) editor.setDecorations(this.asterisksDecorationType, []);
+        if (this.dotsDecorationType) editor.setDecorations(this.dotsDecorationType, []);
+        if (this.blurDecorationType) editor.setDecorations(this.blurDecorationType, []);
     }
 
     public toggleMasking() {
@@ -205,6 +227,9 @@ export class EnvMaskingProvider implements vscode.Disposable {
     public refreshAllDecorations() {
         // Recreate decoration types with current settings
         this.createDecorationTypes();
+        
+        // Reset stats since we're going to recount everything
+        this.statsTracker.reset();
         
         // Apply to all open .env files
         vscode.workspace.textDocuments.forEach(document => {
@@ -250,12 +275,36 @@ export class EnvMaskingProvider implements vscode.Disposable {
     }
 
     dispose() {
-        this.decorationType?.dispose();
+        this.asterisksDecorationType?.dispose();
+        this.dotsDecorationType?.dispose();
         this.blurDecorationType?.dispose();
         if (this.autoLockTimer) {
             clearTimeout(this.autoLockTimer);
         }
         this.debounceTimer.forEach(timer => clearTimeout(timer));
         this.debounceTimer.clear();
+    }
+
+    private shouldMaskValue(key: string, value: string): boolean {
+        const whitelist = this.settingsManager.getSetting<string[]>('whitelist', []);
+        const maskAllValues = this.settingsManager.getSetting<boolean>('maskAllValues', false);
+        
+        // Check whitelist first
+        if (whitelist.some(whiteKey => key.toUpperCase().includes(whiteKey.toUpperCase()))) {
+            return false;
+        }
+
+        // If streaming mode is on, mask everything (except whitelisted)
+        if (this.isStreamingMode) {
+            return true;
+        }
+
+        // If mask all values is enabled
+        if (maskAllValues) {
+            return true;
+        }
+
+        // Use pattern matching
+        return this.patternMatcher.shouldMask(key);
     }
 }
