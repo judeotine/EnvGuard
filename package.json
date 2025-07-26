@@ -3,8 +3,9 @@
   "displayName": "EnvGuard",
   "description": "Protect your secrets in VS Code — mask sensitive values in .env files automatically and safely.",
   "version": "1.0.0",
-  "publisher": "envguard",
+  "publisher": "jude-otine",
   "license": "MIT",
+  "icon": "assets/logo/envguard-logo.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/judeotine/EnvGuard.git"
@@ -31,7 +32,15 @@
   ],
   "activationEvents": [
     "onLanguage:dotenv",
-    "onLanguage:plaintext"
+    "onLanguage:plaintext",
+    "onView:envguard",
+    "onCommand:envguard.openFeatureRequest",
+    "onCommand:envguard.viewLogs",
+    "onCommand:envguard.exportConfig",
+    "onCommand:envguard.importConfig",
+    "onCommand:envguard.toggleMasking",
+    "onCommand:envguard.toggleStreamingMode",
+    "onCommand:envguard.focus"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -60,6 +69,16 @@
         "command": "envguard.openSettings",
         "title": "Open Settings",
         "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.focus",
+        "title": "Show EnvGuard",
+        "category": "EnvGuard"
+      },
+      {
+        "command": "envguard.openFeatureRequest",
+        "title": "Feature Request",
+        "category": "EnvGuard"
       }
     ],
     "keybindings": [
@@ -67,7 +86,7 @@
         "command": "envguard.toggleMasking",
         "key": "ctrl+shift+m",
         "mac": "cmd+shift+m",
-        "when": "editorTextFocus"
+        "when": "editorTextFocus && editorLangId == 'dotenv'"
       }
     ],
     "configuration": {
@@ -164,21 +183,42 @@
         }
       }
     },
-    "views": {
-      "explorer": [
+    "iconThemes": [
+      {
+        "id": "envguard-icons",
+        "label": "EnvGuard Icons",
+        "path": "./assets/logo/envguard-logo.png"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
         {
-          "id": "envguard",
-          "name": "EnvGuard",
-          "when": "true"
+          "id": "envguard-sidebar",
+          "title": "EnvGuard",
+          "icon": "$(shield)"
         }
       ]
     },
-    "viewsWelcome": [
-      {
-        "view": "envguard",
-        "contents": "Configure EnvGuard to protect your environment variables.\n[Open Settings](command:envguard.openSettings)\n[Toggle Masking](command:envguard.toggleMasking)"
-      }
-    ]
+    "views": {
+      "envguard-sidebar": [
+        {
+          "type": "webview",
+          "id": "envguard.view",
+          "name": "EnvGuard",
+          "icon": "$(shield)",
+          "contextualTitle": "EnvGuard"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "envguard.focus",
+          "when": "view == envguard.view",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
