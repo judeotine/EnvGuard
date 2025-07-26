@@ -1,21 +1,20 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/judeotine/EnvGuard/main/assets/logo/envguard-logo.png" alt="EnvGuard Logo" width="200">
+  <img src="./assets/logo/envguard-logo.png" alt="EnvGuard Logo" width="200">
   <h1>EnvGuard: Secure Environment Variable Masking for VS Code</h1>
-  <p>Professional-grade protection for your sensitive environment variables during development</p>
 </div>
-
-**Enterprise-Grade Secret Protection for VS Code**
 
 EnvGuard is a professional development tool that automatically masks sensitive environment variables in VS Code, ensuring your secrets remain secure during screen sharing, live coding and pair programming sessions. Trusted by developers worldwide, EnvGuard provides robust protection without modifying your files.
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/envguard.envguard?style=flat-square&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=envguard.envguard)
-[![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/envguard.envguard?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=envguard.envguard)
+[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/envguard?style=flat-square&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=envguard)
+[![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/envguard?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=envguard)
 [![GitHub Repo stars](https://img.shields.io/github/stars/judeotine/EnvGuard?style=flat-square&logo=github)](https://github.com/judeotine/EnvGuard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 EnvGuard is a professional-grade VS Code extension designed to protect sensitive environment variables during live streaming, screen sharing, or pair programming sessions. It automatically detects and masks sensitive values in `.env` files without affecting the actual file content.
 
-> 🌐 **Website**: [envguard](https://envguard-six.vercel.app)
+> **Website**: [envguard](https://envguard-six.vercel.app)
+
+>  **Suggest a feature**: [Submit feedback or ideas →](https://envguard.canny.io/feature-requests)
 
 ---
 
@@ -68,12 +67,12 @@ EnvGuard is a professional-grade VS Code extension designed to protect sensitive
 ### Via VS Code Marketplace
 1. Open VS Code
 2. Go to Extensions (`Ctrl+Shift+X`)
-3. Search for "EnvGuard"
+3. Search for "judeotine.envguard"
 4. Click **Install**
 
 ### Via Command Line
 ```bash
-code --install-extension envguard.envguard
+code --install-extension judeotine.envguard
 ```
 
 ### Manual Installation
@@ -84,10 +83,10 @@ code --install-extension envguard.envguard
 
 ## Quick Start
 
-1. **Install** EnvGuard from the VS Code Marketplace
-2. **Open** any `.env` file
-3. **See** sensitive values automatically masked
-4. **Toggle** masking with `Ctrl+Shift+M` when needed
+1. **Install** EnvGuard from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=envguard)
+2. **Open** any `.env` file in VS Code
+3. **View** sensitive values automatically masked
+4. **Toggle** masking with `Ctrl+Shift+M` (Windows/Linux) or `Cmd+Shift+M` (Mac)
 
 ![Quick Start Demo](screenshots/quick-start.gif)
 
@@ -97,7 +96,7 @@ code --install-extension envguard.envguard
 
 ### Recommended Settings
 
-For optimal security and usability, we recommend the following configuration in your VS Code settings (File > Preferences > Settings > Extensions > EnvGuard):
+Add these settings to your VS Code settings (`File > Preferences > Settings > Extensions > EnvGuard`) for optimal security:
 
 ```json
 {
@@ -140,7 +139,7 @@ For optimal security and usability, we recommend the following configuration in 
 
 ### Advanced Configuration
 
-Access settings via `File > Preferences > Settings` and search for "EnvGuard":
+Customize EnvGuard behavior through VS Code settings. Access via `File > Preferences > Settings` and search for "EnvGuard":
 
 ```json
 {
@@ -182,11 +181,10 @@ Create a `.vscode/settings.json` file in your project:
 
 | Command | Shortcut | Description |
 |---------|----------|-------------|
-| `EnvGuard: Toggle Masking` | `Ctrl+Shift+M` | Enable/disable masking for current session |
-| `EnvGuard: Enable Streaming Mode` | - | Activate maximum protection for live streaming |
-| `EnvGuard: Disable Streaming Mode` | - | Return to normal masking mode |
-| `EnvGuard: Refresh Patterns` | - | Reload masking patterns from settings |
-| `EnvGuard: Open Settings` | - | Quick access to EnvGuard configuration |
+| `EnvGuard: Toggle Masking` | `Ctrl+Shift+M`/`Cmd+Shift+M` | Toggle masking for current session |
+| `EnvGuard: Toggle Streaming Mode` | `Ctrl+Alt+S`/`Cmd+Alt+S` | Toggle maximum protection for streaming |
+| `EnvGuard: Refresh Patterns` | - | Reload masking patterns |
+| `EnvGuard: Open Settings` | - | Open EnvGuard settings |
 
 ---
 
@@ -272,29 +270,21 @@ Customize the list in settings to match your project structure.
 ## Development
 
 ### Prerequisites
-- Node.js 16+
-- VS Code 1.74.0+
-- TypeScript 4.9+
+- Node.js 18+ (LTS)
+- VS Code 1.80.0+
+- pnpm 8.x
 
 ### Setup
-```bash
-git clone https://github.com/judeotine/EnvGuard.git
-cd EnvGuard
-npm install
-npm run compile
-```
+1. Clone the repository
+2. Install dependencies: `pnpm install`
+3. Build the extension: `pnpm run compile`
+4. Press F5 to launch the extension in development mode
 
-### Testing
-```bash
-# Compile TypeScript
-npm run compile
-
-# Watch for changes
-npm run watch
-
-# Run extension in development
-# Press F5 in VS Code to launch Extension Development Host
-```
+### Scripts
+- `pnpm run compile`: Compile TypeScript
+- `pnpm run watch`: Watch for changes
+- `pnpm run test`: Run tests
+- `pnpm run package`: Create VSIX package
 
 ---
 
@@ -339,7 +329,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## Issues & Support
 
 - **Bug Reports**: [GitHub Issues](https://github.com/judeotine/EnvGuard/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/judeotine/EnvGuard/discussions)
+- **Feature Requests**: [canny](https://envguard.canny.io/feature-requests)
 - **Documentation**: [Wiki](https://github.com/judeotine/EnvGuard/wiki)
 
 ---
@@ -352,9 +342,6 @@ EnvGuard is licensed under the MIT License. See [LICENSE](LICENSE) for the full 
 
 Security is our top priority. If you discover any security issues, please review our [Security Policy](SECURITY.md) for reporting vulnerabilities.
 
-## Acknowledgements
-
-We'd like to thank all our contributors and the open-source community for their support. Special thanks to the VS Code team for their excellent extension API documentation.
 
 ## Trademarks
 
@@ -372,7 +359,7 @@ VS Code is a trademark of Microsoft Corporation. EnvGuard is not affiliated with
 
 ## Author
 
-**Jude Otine**
+**jude otine**
 - GitHub: [@judeotine](https://github.com/judeotine)
 - Website: [judeotine](https://judeotine.vercel.app)
 
@@ -382,6 +369,6 @@ VS Code is a trademark of Microsoft Corporation. EnvGuard is not affiliated with
 
 **Star this repo if EnvGuard helps keep your secrets safe!**
 
-[Report Bug](https://github.com/judeotine/EnvGuard/issues) • [Request Feature](https://github.com/judeotine/EnvGuard/discussions) • [Documentation](https://github.com/judeotine/EnvGuard/wiki)
+[Report Bug](https://github.com/judeotine/EnvGuard/issues) • [Request Feature](https://envguard.canny.io/feature-requests) • [Documentation](https://github.com/judeotine/EnvGuard/wiki)
 
 </div>
