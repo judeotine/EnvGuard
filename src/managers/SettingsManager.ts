@@ -11,8 +11,14 @@ export class SettingsManager {
         return this.configuration.get<T>(key, defaultValue);
     }
 
-    public async setSetting<T>(key: string, value: T): Promise<void> {
-        await this.configuration.update(key, value, vscode.ConfigurationTarget.Workspace);
+    public async setSetting<T>(key: string, value: T, target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Workspace): Promise<void> {
+        await this.configuration.update(key, value, target);
+        this.refreshSettings();
+    }
+    
+    // Alias for setSetting for backward compatibility
+    public async updateSetting<T>(key: string, value: T, target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Workspace): Promise<void> {
+        return this.setSetting(key, value, target);
     }
 
     public refreshSettings(): void {
