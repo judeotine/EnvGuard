@@ -138,9 +138,9 @@ export class ActivityLogger {
     }
 
     private loadLogs(): void {
-    if (!this.logsEnabled || !this.logFile) {
-        return;
-    }
+        if (!this.logsEnabled || !this.logFile) {
+            return;
+        }
         try {
             if (fs.existsSync(this.logFile)) {
                 const logContent = fs.readFileSync(this.logFile, 'utf8');

@@ -765,14 +765,14 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         return status.enabled ? 'Protection Active' : 'Protection Inactive';
     }
 
-    private handleWebviewMessage(message: WebviewMessage): void {
+    private async handleWebviewMessage(message: WebviewMessage): Promise<void> {
         try {
             if (isToggleCommand(message)) {
                 this.handleToggleCommand(message);
             } else if (isStyleCommand(message)) {
-                this.handleStyleCommand(message);
+                await this.handleStyleCommand(message);
             } else if (isActionCommand(message)) {
-                this.handleActionCommand(message);
+                await this.handleActionCommand(message);
             } else {
                 // This should never happen with proper typing, but just in case
                 console.warn('Unknown message type received:', message);
@@ -803,9 +803,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         this.sendInitialState();
     }
 
-    private handleStyleCommand(message: StyleMessage): void {
+    private async handleStyleCommand(message: StyleMessage): Promise<void> {
         try {
-            this.settingsManager.setSetting('maskStyle', message.style);
+            await this.settingsManager.setSetting('maskStyle', message.style);
             // Safely call updateMaskStyle if it exists
             this.safeCallProviderMethod('updateMaskStyle', message.style);
             this.sendInitialState();

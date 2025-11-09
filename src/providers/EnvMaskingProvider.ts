@@ -5,8 +5,8 @@ import { StatsTracker } from '../utils/StatsTracker';
 
 export class EnvMaskingProvider implements vscode.Disposable {
     private asterisksDecorationType: vscode.TextEditorDecorationType | undefined;
-private dotsDecorationType: vscode.TextEditorDecorationType | undefined;
-private blurDecorationType: vscode.TextEditorDecorationType | undefined;
+    private dotsDecorationType: vscode.TextEditorDecorationType | undefined;
+    private blurDecorationType: vscode.TextEditorDecorationType | undefined;
     private isEnabled: boolean = true;
     private isStreamingMode: boolean = false;
     private autoLockTimer: NodeJS.Timeout | undefined;
@@ -105,7 +105,6 @@ private blurDecorationType: vscode.TextEditorDecorationType | undefined;
         // Track this file in our stats
         this.statsTracker.trackFile(document.uri.fsPath);
 
-        const decorations: vscode.DecorationOptions[] = [];
         const text = document.getText();
         const lines = text.split('\n');
         let secretsMaskedInFile = 0;
