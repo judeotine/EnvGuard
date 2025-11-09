@@ -93,6 +93,18 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarProvider.updateStatusBar();
     });
 
+    const enableStreamingModeCommand = vscode.commands.registerCommand('envguard.enableStreamingMode', () => {
+        envMaskingProvider.enableStreamingMode();
+        statusBarProvider.updateStatusBar();
+        activityLogger.info('Streaming mode enabled');
+    });
+
+    const disableStreamingModeCommand = vscode.commands.registerCommand('envguard.disableStreamingMode', () => {
+        envMaskingProvider.disableStreamingMode();
+        statusBarProvider.updateStatusBar();
+        activityLogger.info('Streaming mode disabled');
+    });
+
     const refreshPatternsCommand = vscode.commands.registerCommand('envguard.refreshPatterns', () => {
         patternMatcher.refreshPatterns();
         envMaskingProvider.refreshAllDecorations();
@@ -196,12 +208,15 @@ export function activate(context: vscode.ExtensionContext) {
         focusCommand,
         toggleMaskingCommand,
         toggleStreamingModeCommand,
+        enableStreamingModeCommand,
+        disableStreamingModeCommand,
         refreshPatternsCommand,
         openSettingsCommand,
         scanWorkspaceCommand,
         exportConfigCommand,
         importConfigCommand,
         viewLogsCommand,
+        openFeatureRequestCommand,
         onDidOpenTextDocument,
         onDidChangeTextDocument,
         onDidChangeActiveTextEditor,

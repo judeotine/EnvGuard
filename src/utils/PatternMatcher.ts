@@ -35,7 +35,10 @@ export class PatternMatcher {
             
             // Support glob-like patterns with wildcards
             if (pattern.includes('*')) {
-                const regexPattern = upperPattern.replace(/\*/g, '.*');
+                // Escape special regex characters except *
+                const escapedPattern = upperPattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+                // Replace * with .*
+                const regexPattern = escapedPattern.replace(/\*/g, '.*');
                 const regex = new RegExp(`^${regexPattern}$`, 'i');
                 return regex.test(upperKey);
             }

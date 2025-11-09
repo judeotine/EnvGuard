@@ -5,8 +5,8 @@ import { StatsTracker } from '../utils/StatsTracker';
 
 export class EnvMaskingProvider implements vscode.Disposable {
     private asterisksDecorationType: vscode.TextEditorDecorationType | undefined;
-private dotsDecorationType: vscode.TextEditorDecorationType | undefined;
-private blurDecorationType: vscode.TextEditorDecorationType | undefined;
+    private dotsDecorationType: vscode.TextEditorDecorationType | undefined;
+    private blurDecorationType: vscode.TextEditorDecorationType | undefined;
     private isEnabled: boolean = true;
     private isStreamingMode: boolean = false;
     private autoLockTimer: NodeJS.Timeout | undefined;
@@ -105,7 +105,6 @@ private blurDecorationType: vscode.TextEditorDecorationType | undefined;
         // Track this file in our stats
         this.statsTracker.trackFile(document.uri.fsPath);
 
-        const decorations: vscode.DecorationOptions[] = [];
         const text = document.getText();
         const lines = text.split('\n');
         let secretsMaskedInFile = 0;
@@ -119,9 +118,11 @@ private blurDecorationType: vscode.TextEditorDecorationType | undefined;
             if (match) {
                 const [, key, value] = match;
                 const trimmedKey = key.trim();
-                if (this.shouldMaskValue(trimmedKey, value) && match.index !== undefined) {
+                if (this.shouldMaskValue(trimmedKey, value)) {
                     // Calculate position right after the '=' character
                     const equalsPosition = line.indexOf('=');
+                    if (equalsPosition === -1) return; // Safety check
+                    
                     const startPos = new vscode.Position(lineIndex, equalsPosition + 1);
                     const endPos = new vscode.Position(lineIndex, line.length);
 

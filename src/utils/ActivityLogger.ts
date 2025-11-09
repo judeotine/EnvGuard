@@ -138,16 +138,23 @@ export class ActivityLogger {
     }
 
     private loadLogs(): void {
-    if (!this.logsEnabled || !this.logFile) {
-        return;
-    }
+        if (!this.logsEnabled || !this.logFile) {
+            return;
+        }
         try {
             if (fs.existsSync(this.logFile)) {
                 const logContent = fs.readFileSync(this.logFile, 'utf8');
                 this.logEntries = logContent
                     .split('\n')
                     .filter(line => line.trim())
-                    .map(line => JSON.parse(line) as LogEntry);
+                    .map(line => {
+                        try {
+                            return JSON.parse(line) as LogEntry;
+                        } catch {
+                            return null;
+                        }
+                    })
+                    .filter((entry): entry is LogEntry => entry !== null);
             }
         } catch (error) {
             console.error('Failed to load logs:', error);
